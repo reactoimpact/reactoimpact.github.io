@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.js"></script>
     <title>Reacto</title>
     <style>
         body {
@@ -26,10 +27,19 @@
         }
 
         header {
-            background: linear-gradient(45deg, blue, red);
-            color: #fff;
+            display:flex;
+            background: black;
             text-align: center;
             padding: 20px;
+            align-items: center;
+        }
+
+        .name {
+            color: white;
+            font-size: 50px;
+            margin: 0;
+            padding: 0;
+            margin-left: 50px;
         }
 
         a {
@@ -48,11 +58,92 @@
             background-color: #f0f0f0;
         }
     </style>
+    
 </head>
 <body>
     <div class="main">
         <header>
-            <h1>Welcome to My Website</h1>
+            <div id="header"></div>
+            <script>
+                let img;
+                let particles = []
+                let canvas;
+
+                function preload() {
+                img = loadImage('profile.png')
+                }
+
+                function setup() {
+                canvas = createCanvas(400, 400);
+                canvas.parent('header')
+                
+                for(let i = 0; i < 100; i ++){
+                    particles.push(new Particle(200, 200, random(0, 360), random(1, 2)))
+                }
+                }
+
+                function draw() {
+                background(0);
+                
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    let particle = particles[i];
+                    if (particle.isOutside(width, height)) {
+                    particles.splice(i, 1);
+                    particles.push(new Particle(200, 200, random(0, 360), random(1, 2)))
+                    } else {
+                    particle.draw();
+                    particle.move();
+                    }
+                }
+                
+                fill(200, 45)
+                circle(width/2, height/2, width/2+78)
+                image(img, width/6, height/6, width/1.5, height/1.5)
+                
+                }
+
+
+
+                class Particle {
+                constructor(x = 200, y = 200, dir = 1, speed = 1) {
+                    this.x = x;
+                    this.y = y;
+                    this.startX = x; // Store the starting x-coordinate
+                    this.startY = y; // Store the starting y-coordinate
+                    this.dir = dir;
+                    this.speed = speed;
+                }
+
+                draw() {
+                    noStroke();
+                    
+                    // Calculate distance from starting point
+                    let d = dist(this.x, this.y, this.startX, this.startY);
+                    
+                    // Map distance to alpha value (adjust the values based on your requirements)
+                    let alpha = map(d, 0, 200, 255, 0); // Change 200 to the maximum distance you want to affect the alpha
+                    
+                    fill(202, 74, 66, alpha);
+                    circle(this.x, this.y, 10);
+                }
+
+                move() {
+                    // Convert polar to Cartesian
+                    this.x += this.speed * Math.cos(radians(this.dir));
+                    this.y += this.speed * Math.sin(radians(this.dir));
+                }
+                
+                isOutside(screenX, screenY) {
+                    if(this.x > screenX || this.x < 0 || this.y > screenY || this.y < 0){
+                    return true;
+                    } else {
+                    return false;
+                    }
+                }
+                }
+
+            </script>
+            <h1 class="name">Reacto</h1>
         </header>
 
         
